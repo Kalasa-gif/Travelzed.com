@@ -1,0 +1,306 @@
+```bash
+# Project structure for Travel Zambia web (Next.js + Tailwind CSS)
+
+travel-zambia/
+├── components/
+│   ├── Navbar.js
+│   ├── Footer.js
+│   ├── BlogCard.js
+│   └── AccommodationCard.js      # New component
+├── pages/
+│   ├── index.js
+│   ├── blog/
+│   │   └── [slug].js
+│   ├── accommodation.js          # New page
+│   └── _app.js
+├── public/
+│   └── images/
+├── styles/
+│   └── globals.css
+├── posts/                         
+│   └── welcome.md
+├── package.json
+├── tailwind.config.js
+└── postcss.config.js
+```
+
+```json
+// package.json
+{
+  "name": "travel-zambia",
+  "version": "1.0.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "remark": "^14.0.2",
+    "remark-html": "^15.0.1",
+    "gray-matter": "latest"
+  },
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest"
+  }
+}
+```
+
+```js
+// tailwind.config.js
+module.exports = {
+  content: ["./pages/**/*.{js,jsx}", "./components/**/*.{js,jsx}"],
+  theme: { extend: {} },
+  plugins: [],
+};
+```
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
+```
+
+```css
+/* styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+```js
+// pages/_app.js
+import '../styles/globals.css';
+
+export default function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />;
+}
+```
+
+```js
+// components/Navbar.js
+import Link from 'next/link';
+
+export default function Navbar() {
+  return (
+    <nav className="p-4 bg-blue-600 text-white flex justify-between">
+      <h1 className="text-xl font-bold">Travel Zambia</h1>
+      <div className="space-x-4">
+        <Link href="/">Home</Link>
+        <Link href="/blog">Blog</Link>
+        <Link href="/accommodation">Accommodation</Link>  {/* New link */}
+      </div>
+    </nav>
+  );
+}
+```
+
+```js
+// components/Footer.js
+export default function Footer() {
+  return (
+    <footer className="p-4 bg-gray-800 text-center text-white">
+      © {new Date().getFullYear()} Travel Zambia. All rights reserved.
+    </footer>
+  );
+}
+```
+
+```js
+// components/BlogCard.js
+import Link from 'next/link';
+
+export default function BlogCard({ post }) {
+  return (
+    <div className="border p-4 rounded shadow hover:shadow-lg">
+      <h2 className="text-2xl font-semibold mb-2">{post.frontmatter.title}</h2>
+      <p className="text-sm text-gray-600 mb-4">{post.frontmatter.date}</p>
+      <p className="mb-4">{post.excerpt}</p>
+      <Link href={`/blog/${post.slug}"><a className="text-blue-500 hover:underline">Read more</a></Link>
+    </div>
+  );
+}
+```
+
+```js
+// components/AccommodationCard.js
+export default function AccommodationCard({ name, location, link }) {
+  return (
+    <div className="border p-4 rounded shadow hover:shadow-lg">
+      <h3 className="text-xl font-semibold mb-2">{name}</h3>
+      <p className="text-sm text-gray-600 mb-4">{location}</p>
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-green-500 hover:underline"
+      >
+        Book Now
+      </a>
+    </div>
+  );
+}
+```
+
+```js
+// pages/index.js
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import AccommodationCard from '../components/AccommodationCard';
+
+export default function Home() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow p-8">
+        <h1 className="text-4xl font-bold mb-4">Welcome to Travel Zambia</h1>
+        <p className="text-lg mb-6">
+          Discover the heart of Africa through our curated travel guides,
+          insider tips, and enchanting photo stories.
+        </p>
+        <a
+          href="https://affiliate.example.com/zambia-tours"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-green-500 text-white px-6 py-3 rounded-lg"
+        >
+          Book a Tour
+        </a>
+
+        {/* Accommodation Section */}
+        <section className="my-12">
+          <h2 className="text-3xl font-bold mb-6">Recommended Accommodations</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <AccommodationCard
+              name="Lusaka River View Hotel"
+              location="Lusaka"
+              link="https://affiliate.example.com/lusaka-river-view"
+            />
+            <AccommodationCard
+              name="Mzuzu Safari Lodge"
+              location="Mzuzu"
+              link="https://affiliate.example.com/mzuzu-safari"
+            />
+            <AccommodationCard
+              name="Livingstone Falls Guesthouses"
+              location="Livingstone"
+              link="https://affiliate.example.com/livingstone-guesthouses"
+            />
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+```
+
+```js
+// pages/accommodation.js
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import AccommodationCard from '../components/AccommodationCard';
+
+const accommodations = [
+  {
+    name: 'Lusaka River View Hotel',
+    location: 'Lusaka',
+    link: 'https://affiliate.example.com/lusaka-river-view',
+  },
+  {
+    name: 'Mzuzu Safari Lodge',
+    location: 'Mzuzu',
+    link: 'https://affiliate.example.com/mzuzu-safari',
+  },
+  {
+    name: 'Livingstone Falls Guesthouses',
+    location: 'Livingstone',
+    link: 'https://affiliate.example.com/livingstone-guesthouses',
+  },
+];
+
+export default function Accommodation() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow p-8">
+        <h1 className="text-4xl font-bold mb-4">Accommodation in Zambia</h1>
+        <p className="text-lg mb-6">
+          Browse our partner accommodations across Zambia and book your stay.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {accommodations.map((acc) => (
+            <AccommodationCard
+              key={acc.name}
+              name={acc.name}
+              location={acc.location}
+              link={acc.link}
+            />
+          ))}
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+```
+
+```js
+// pages/blog/[slug].js  (unchanged)
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import remark from 'remark';
+import html from 'remark-html';
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
+
+export async function getStaticPaths() {
+  const files = fs.readdirSync(path.join('posts'));
+  const paths = files.map(filename => ({
+    params: { slug: filename.replace('.md', '') }
+  }));
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const markdownWithMeta = fs.readFileSync(
+    path.join('posts', params.slug + '.md'),
+    'utf-8'
+  );
+  const { data: frontmatter, content } = matter(markdownWithMeta);
+  const processedContent = await remark().use(html).process(content);
+  return {
+    props: {
+      frontmatter,
+      content: processedContent.toString(),
+      slug: params.slug,
+    },
+  };
+}
+
+export default function PostPage({ frontmatter, content }) {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow p-8">
+        <h1 className="text-4xl font-bold mb-4">{frontmatter.title}</h1>
+        <div
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+```
+
